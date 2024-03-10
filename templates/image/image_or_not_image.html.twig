@@ -1,0 +1,12 @@
+{% if object.images is not empty %}
+    <div class="card-img-top">
+        <div class="row ">
+            {% for image in object.images %}
+                <div class="d-flex align-items-center  mb-2 col-11 col-sm-6 col-md-3">
+                    <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ vich_uploader_asset(image)|imagine_filter('vignette_article') }}" alt="">
+                    <a href="{{ path("delete_article_image",{id:image.id}) }}" class="btn btn-danger">Supprimer</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

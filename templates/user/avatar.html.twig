@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{% block body %}
+
+    <h3 class="mb-5">Page utilisateur</h3>
+    <div class="d-flex flex-column mb-5 col-11 col-sm-6 col-md-3">
+        <h5 class="mb-4">Username : {{ user.username }}</h5>
+        {% if user.image is not empty %}
+        <h5>Photo de profil :  <a href="{{ path("delete_user_avatar",{id:user.image.id}) }}" class="btn btn-danger" >Supprimer</a> </h5>
+        <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ vich_uploader_asset(user.image)|imagine_filter('vignette_article') }}" alt="">
+
+        {% endif %}
+    </div>
+
+
+
+    {% if user.image is empty %}
+        <h3>Ajouter une image</h3>
+    {{ form_start(form, {attr:{action:path('add_user_avatar', {id:user.id})}}) }}
+    {{ form_row(form.imageFile) }}
+    <button type="submit" class="btn btn-success">Ajouter</button>
+    {{ form_end(form) }}
+    {% endif %}
+    <a href="{{ path('app_article') }}" class="btn btn-secondary mt-3">Retour</a>
+
+
+
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
