@@ -28,11 +28,14 @@
                         </div>
                         <div class="card-footer d-flex justify-content-between">
                             <small class="text-muted mt-3 d-flex flex-column">
+
+                                {% if app.user and app.user.image is not empty %}
+
                                 <div class="mb-2">
 
-                                    Auteur : <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ vich_uploader_asset(app.user.image)|imagine_filter('petite_vignette') }}" alt="">
                                     {{ article.author.username }}
                                 </div>
+                                {% endif %}
                                 <div>Ecrit le {{ article.createdAt|date("d/m/Y H:i") }}</div>
                             </small>
                             <div class="d-flex justify-content-center align-items-center">

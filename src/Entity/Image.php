@@ -34,11 +34,18 @@ class Image
     #[ORM\ManyToOne(inversedBy: 'images')]
     private ?Article $article = null;
 
-    #[ORM\OneToOne(inversedBy: 'image', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'image')]
     private ?User $avatar = null;
 
-    #[ORM\OneToOne(inversedBy: 'image', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'image')]
     private ?Comment $comment = null;
+
+
+
+
+
+
+
 
 
 
@@ -128,6 +135,11 @@ class Image
 
         return $this;
     }
+
+
+
+
+
 
 
 

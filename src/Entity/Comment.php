@@ -33,12 +33,17 @@ class Comment
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'comment')]
     private Collection $likes;
 
-    #[ORM\OneToOne(mappedBy: 'comment', cascade: ['persist', 'remove'])]
-    private ?Image $image = null;
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'comment', orphanRemoval: true)]
+    private Collection $image;
+
+
+
+
 
     public function __construct()
     {
         $this->likes = new ArrayCollection();
+        $this->image = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -137,25 +142,36 @@ class Comment
         return $isLiked;
     }
 
-    public function getImage(): ?Image
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImage(): Collection
     {
         return $this->image;
     }
 
-    public function setImage(?Image $image): static
+    public function addImage(Image $image): static
     {
-        // unset the owning side of the relation if necessary
-        if ($image === null && $this->image !== null) {
-            $this->image->setComment(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($image !== null && $image->getComment() !== $this) {
+        if (!$this->image->contains($image)) {
+            $this->image->add($image);
             $image->setComment($this);
         }
 
-        $this->image = $image;
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->image->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getComment() === $this) {
+                $image->setComment(null);
+            }
+        }
 
         return $this;
     }
+
+
+
 }

@@ -78,16 +78,36 @@ class ImageController extends AbstractController
     #[Route('/image/delete/avatar/{id}', name: 'delete_user_avatar')]
     public function delete(EntityManagerInterface $manager, Image $image,Request $request){
 
+        $route = $request->attributes->get("_route");
+
+        switch ($route){
+
+            case 'delete_article_image':
+                $article = $image->getArticle();
+                $redirectRoute = "article_image";
+                $routeParam= ["id"=>$article->getId()];
+                break;
+            case 'delete_user_avatar':
+                $avatar = $image->getAvatar();
+                $redirectRoute = "user_avatar";
+                $routeParam= ["id"=>$avatar->getId()];
+                break;
+            case 'delete_comment_image':
+                $comment = $image->getComment();
+                $redirectRoute = "comment_image";
+                $routeParam= ["id"=>$comment->getId()];
+                break;
 
 
-        $article = $image->getArticle();
-        $comment = $image->getArticle();
 
+        }
         $manager->remove($image);
         $manager->flush();
 
 
-        return $this->redirectToRoute("article_image", ["id"=>$article->getId()]
-        );
+        return $this->redirectToRoute($redirectRoute, $routeParam);
+
     }
+
+
 }

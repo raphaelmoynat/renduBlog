@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOneInverseSideMapping;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -44,8 +45,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'author')]
     private Collection $likes;
 
-    #[ORM\OneToOne(mappedBy: 'avatar', cascade: ['persist', 'remove'])]
-    private ?Image $image = null;
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'avatar', orphanRemoval: true)]
+    private Collection $image;
+
+
+
+
+
 
 
 
@@ -55,6 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->image = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -222,27 +229,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getImage(): ?Image
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImage(): Collection
     {
         return $this->image;
     }
 
-    public function setImage(?Image $image): static
+    public function addImage(Image $image): static
     {
-        // unset the owning side of the relation if necessary
-        if ($image === null && $this->image !== null) {
-            $this->image->setAvatar(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($image !== null && $image->getAvatar() !== $this) {
+        if (!$this->image->contains($image)) {
+            $this->image->add($image);
             $image->setAvatar($this);
         }
 
-        $this->image = $image;
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->image->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getAvatar() === $this) {
+                $image->setAvatar(null);
+            }
+        }
 
         return $this;
     }
+
+
+
+
 
 
 }
