@@ -9,7 +9,7 @@
                 {% endfor %}
             {% else %}
                 <a class="navbar-brand active" aria-current="page" href="{{ path("user_avatar",{id:app.user.id}) }}" >
-                    Profil
+                    <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_image_profile.png")|imagine_filter('petite_vignette') }}" alt="">
                 </a>
 
             {% endif %}

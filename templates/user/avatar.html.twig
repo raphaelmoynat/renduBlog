@@ -15,13 +15,13 @@
 
 
 
-    {% if user.image is empty %}
+
         <h3>Ajouter une image</h3>
     {{ form_start(form, {attr:{action:path('add_user_avatar', {id:user.id})}}) }}
     {{ form_row(form.imageFile) }}
     <button type="submit" class="btn btn-success">Ajouter</button>
     {{ form_end(form) }}
-    {% endif %}
+
     <a href="{{ path('app_article') }}" class="btn btn-secondary mt-3">Retour</a>
 
 

@@ -6,17 +6,12 @@
             {% for article in articles %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
-                        {% if article.images is not empty %}
+
                             <div class="card-header">
-                                <div class="row">
-                                    {% for image in article.images %}
-                                        <div class="col-6">
-                                            <img class="img-fluid rounded-3" style="height: 150px; object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('vignette_article') }}" alt="">
-                                        </div>
-                                    {% endfor %}
-                                </div>
+                                {% include 'image/image_or_not_image.html.twig' with {object:article} %}
+
                             </div>
-                        {% endif %}                        <div class="card-body">
+                                        <div class="card-body">
                             <div class="card-title d-flex justify-content-between">
                                 <h5>{{ article.titre }}</h5>
                                 <div class="text-muted">Catégorie : {{ article.category.name }}</div>
@@ -29,17 +24,25 @@
                         <div class="card-footer d-flex justify-content-between">
                             <small class="text-muted mt-3 d-flex flex-column">
 
-                                {% if app.user and app.user.image is not empty %}
 
                                 <div class="mb-2">
 
+                                    Auteur :
+                                    {% if article.author.image is not empty %}
+                                    {% for image in article.author.image %}
+                                        <img class="img-fluid rounded-3" style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                                    {% endfor %}
+                                    {% else %}
+                                        <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_image_profile.png")|imagine_filter('petite_vignette') }}" alt="">
+                                    {% endif%}
                                     {{ article.author.username }}
                                 </div>
-                                {% endif %}
+
+
                                 <div>Ecrit le {{ article.createdAt|date("d/m/Y H:i") }}</div>
                             </small>
                             <div class="d-flex justify-content-center align-items-center">
-                            <a href="{{ path("app_show", {id: article.id}) }}" class="btn btn-primary mt-3">Voir plus</a>
+                            <a href="{{ path("app_show", {id: article.id}) }}" class="btn btn-primary mt-3"><i class="bi bi-caret-right-fill"></i></a>
                             </div>
                         </div>
                     </div>

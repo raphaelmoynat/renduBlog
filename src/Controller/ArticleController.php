@@ -123,14 +123,19 @@ class ArticleController extends AbstractController
     #[Route('/article/images/{id}', name:"article_image")]
     public function addImage(Article $article):Response
     {
-        $image = new Image();
-        $formImage = $this->createForm(ImageType::class, $image);
+        if($this->getUser() === $article->getAuthor()) {
 
-        return $this->render("article/image.html.twig", [
-            "article"=>$article,
-            'formImage'=>$formImage->createView()
+            $image = new Image();
+            $formImage = $this->createForm(ImageType::class, $image);
 
-        ]);
+            return $this->render("article/image.html.twig", [
+                "article" => $article,
+                'formImage' => $formImage->createView()
+
+            ]);
+        }else{
+            return $this->redirectToRoute('app_article');
+        }
     }
 
 

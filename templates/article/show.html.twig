@@ -1,26 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container mt-5">
+    <a href="{{ path("app_article") }}" class="btn btn-primary mt-1">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <div class="container mt-2">
         <div class="row">
             <div class="col-md-6">
-                <a href="{{ path("app_article") }}" class="btn btn-primary mt-3">
-                    <i class="bi bi-arrow-left"></i>
-                </a>
+
                 <h3 class="mt-4">Article :</h3>
 
                 <div class="card mb-4">
-                    {% if article.images is not empty %}
-                        <div class="card-header">
-                            <div class="row">
-                                {% for image in article.images %}
-                                    <div class="col-4">
-                                        <img class="img-fluid rounded-3" style="height: 150px; object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('vignette_article') }}" alt="">
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
+                    <div class="card-header" >
+                        {% include 'image/image_or_not_image.html.twig' with {object:article} %}
+
+                    </div>
 
 
                     <div class="card-body">
@@ -36,26 +30,47 @@
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <small class="text-muted mt-3 d-flex flex-column">
-                            {% if app.user and app.user.image is not empty %}
+
                             <div class="mb-2">
 
-                                {{ article.author.username }}
+                                <div class="mb-2">
+
+                                    Auteur :
+                                    {% if article.author.image is not empty %}
+                                        {% for image in article.author.image %}
+                                            <img class="img-fluid rounded-3" style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                                        {% endfor %}
+                                    {% else %}
+                                        <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_image_profile.png")|imagine_filter('petite_vignette') }}" alt="">
+                                    {% endif%}
+                                    {{ article.author.username }}
+                                </div>
                             </div>
-                            {% endif %}
+
                             <div>Ecrit le {{ article.createdAt|date("d/m/Y H:i") }}</div>
                         </small>
                         <div>
 
                             {% if app.user == article.author %}
-                                <a href="{{ path("app_edit_article", {id: article.id}) }}" class="btn btn-warning mt-3">Editer</a>
-                                <a href="{{ path("app_delete_article", {id: article.id}) }}" class="btn btn-danger mt-3">Supprimer</a>
-                                <a href="{{ path('article_image', {id:article.id}) }}" class="btn btn-success">Images</a>
+                                <a href="{{ path("app_edit_article", {id: article.id}) }}" class="btn btn-warning mt-3"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ path("app_delete_article", {id: article.id}) }}" class="btn btn-danger mt-3"><i class="bi bi-trash3"></i></a>
+                                <a href="{{ path('article_image', {id:article.id}) }}" class="btn btn-success mt-3"><i class="bi bi-image"></i></a>
 
                             {% endif %}
 
                         </div>
                     </div>
                 </div>
+                {% if app.user %}
+                    {{ form_start(form, {attr: {action:path("app_comment_create", {id:article.id})}}) }}
+
+                    <div class="d-flex">
+                        {{ form_widget(form.content, {'attr': {'class': 'form-control flex-grow-1 ', 'rows': 3, 'placeholder': 'Ajouter un commentaire...' }}) }}
+                        <button type="submit" class="btn btn-success ml-2">Commenter</button>
+                    </div>
+
+                    {{ form_end(form) }}
+                {% endif %}
             </div>
             <div class="col-md-6">
                 <h3 class="mt-4">Commentaires :</h3>
@@ -63,45 +78,47 @@
                 {% for comment in article.comments %}
                     <div class="card mb-3">
                         <div class="card-body">
-                            <div class="row">
+                            <div class="d-flex flex-row">
                                 {% for image in comment.image %}
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <img class="img-fluid rounded-3" style="height: 150px; object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('vignette_article') }}" alt="">
                                     </div>
                                 {% endfor %}
-                            </div>
+
                             <p class="card-text">{{ comment.content }}</p>
+                            </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
                             <div class="text-muted">{{ comment.createdAt|date("d/m/Y H:i") }}</div>
                             {% if app.user == comment.author %}
                             <div>
                                 {% include 'like/button.html.twig' with { routeName:"comment_like", object:comment } %}
-                                <a href="{{ path("edit_comment",{id:comment.id}) }}" class="btn btn-warning">Editer</a>
-                                <a href="{{ path("delete_comment",{id:comment.id}) }}" class="btn btn-danger">Supprimer</a>
-                                <a href="{{ path("add_comment_image", {id: comment.id}) }}" class="btn btn-primary">Image</a>
+                                <a href="{{ path("edit_comment",{id:comment.id}) }}" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ path("delete_comment",{id:comment.id}) }}" class="btn btn-danger"><i class="bi bi-trash3"></i></a>
+                                <a href="{{ path("add_comment_image", {id: comment.id}) }}" class="btn btn-success"><i class="bi bi-image"></i></a>
 
                             </div>
                             {% else %}
-                            <div>
-                                <div class="text-muted">{{ comment.author.username }}</div>
+                            <div><div class="mb-2">
+
+                                    <div class="text-muted">
+                                        {% if comment.author.image is not empty %}
+                                            {% for image in comment.author.image %}
+                                                <img class="img-fluid rounded-3" style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                                            {% endfor %}
+                                        {% else %}
+                                            <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_image_profile.png")|imagine_filter('petite_vignette') }}" alt="">
+                                        {% endif%}
+                                        {{ comment.author.username }}
+                                    </div>
+                                </div>
+
                             </div>
                             {% endif %}
                         </div>
                     </div>
                 {% endfor %}
 
-
-                {% if app.user %}
-                {{ form_start(form, {attr: {action:path("app_comment_create", {id:article.id})}}) }}
-
-                <div class="d-flex">
-                    {{ form_widget(form.content, {'attr': {'class': 'form-control flex-grow-1 ', 'rows': 3, 'placeholder': 'Ajouter un commentaire...' }}) }}
-                    <button type="submit" class="btn btn-success ml-2">Commenter</button>
-                </div>
-
-                {{ form_end(form) }}
-                {% endif %}
             </div>
         </div>
     </div>

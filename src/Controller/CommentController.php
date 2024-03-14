@@ -104,10 +104,15 @@ class CommentController extends AbstractController
         $image = new Image();
         $formImage = $this->createForm(ImageType::class, $image);
 
-        return $this->render("comment/image.html.twig", [
-            "comment"=>$comment,
-            'formImage'=>$formImage->createView()
+        if($this->getUser() === $comment->getAuthor()) {
 
-        ]);
+            return $this->render("comment/image.html.twig", [
+                "comment" => $comment,
+                'formImage' => $formImage->createView()
+
+            ]);
+        }else{
+            return $this->redirectToRoute('app_article');
+        }
     }
 }
