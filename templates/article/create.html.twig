@@ -5,30 +5,37 @@
 {% block body %}
 
     <div class="container mt-5">
-        <h3 class="mb-4">Nouvel Article</h3>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">Nouvel Article</h3>
 
-        {{ form_start(form) }}
+                        {{ form_start(form) }}
 
-        <div class="mb-3">
-            {{ form_label(form.titre, 'Titre de l\'article') }}
-            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                        <div class="mb-3">
+                            {{ form_label(form.titre, 'Titre de l\'article') }}
+                            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.content, 'Contenu de l\'article') }}
+                            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 8}}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.content, 'Catégorie de l\'article') }}
+                            {{ form_widget(form.category, {'attr': {'class': 'form-control', 'rows': 8}}) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-success">{{ btnValue }}</button>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            {{ form_label(form.content, 'Contenu de l\'article') }}
-            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 8}}) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.content, 'Catégorie de l\'article') }}
-            {{ form_widget(form.category, {'attr': {'class': 'form-control', 'rows': 8}}) }}
-        </div>
-
-
-
-        <button type="submit" class="btn btn-success">{{ btnValue }}</button>
-
-        {{ form_end(form) }}
     </div>
 
 {% endblock %}
+

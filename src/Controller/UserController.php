@@ -21,7 +21,6 @@ class UserController extends AbstractController
         return $this->render("user/avatar.html.twig", [
             "user"=>$user,
             'form'=>$form->createView()
-
         ]);
     }
 }
