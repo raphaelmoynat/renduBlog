@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use App\Entity\Comment;
 use App\Entity\Like;
-use App\Repository\ArticleRepository;
-use App\Repository\CommentRepository;
 use App\Repository\LikeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,77 +16,48 @@ class LikeController extends AbstractController
 {
     #[Route('/like/article/{id}', name: 'app_like')]
     #[Route('/like/comment/{id}', name: 'comment_like')]
-    public function like(Request $request, ArticleRepository $articleRepository, CommentRepository $commentRepository, $id, EntityManagerInterface $manager, LikeRepository $likeRepository): Response
+    public function like(Request $request, EntityManagerInterface $manager, LikeRepository $likeRepository, Article $article = null, Comment $comment = null): Response
     {
-        $mode = null;
-        $countSearch = array();
         $user = $this->getUser();
-        if(!$user){return $this->json("no user connected", 400);}
-
-        $route = $request->attributes->get("_route");
-        if($route == "article_like"){
-            $article = $articleRepository->find($id);
-            $mode = "article";
-        }
-        if($route == "comment_like"){
-            $comment =  $commentRepository->find($id);
-            $mode= "comment";
+        if (!$user) {
+            return $this->json("no user connected", 400);
         }
 
-
-        $search = [
-            "author"=>$user
-        ];
-        if($mode == "article"){
-            $search["article"]=$article;
-        }
-        if($mode == "comment"){
-            $search["comment"]=$comment;
+        if ($article !== null) {
+            $entity = $article;
+        } elseif ($comment !== null) {
+            $entity = $comment;
+        } else {
+            return $this->json("No article or comment trouvé", 400);
         }
 
-        $like = $likeRepository->findOneBy($search);
-
-        if(!$like){
-            $like = new Like();
-            $like->setAuthor($user);
-            if($mode=="nem"){
-                $like->setArticle($article);
-            }
-            if($mode=="comment"){
-                $like->setComment($comment);
-            }
-
-
-            $manager->persist($like);
-            $isLiked = true;
-
-        }else{
+        if ($entity->isLikedBy($user)) {
+            $like = $likeRepository->findOneBy([
+                'author' => $user,
+                'article' => $article,
+                'comment' => $comment
+            ]);
             $manager->remove($like);
             $isLiked = false;
+        } else {
+            $like = new Like();
+            if ($article !== null) {
+                $like->setArticle($article);
+            } elseif ($comment !== null) {
+                $like->setComment($comment);
+            }
+            $like->setAuthor($user);
+            $manager->persist($like);
+            $isLiked = true;
         }
 
         $manager->flush();
 
-
-        if($mode=="article")
-        {
-            $countSearch= [
-                "article"=>$article
-            ];
-        }
-
-        if($mode=="comment")
-        {
-            $countSearch= [
-                "comment"=>$comment
-            ];
-        }
-
-        $count = $likeRepository->count($countSearch);
         $data = [
-            "isLiked"=>$isLiked,
-            "count"=>$count
+            'liked' => $isLiked,
+            'count' => $likeRepository->count(['article' => $article, 'comment' => $comment])
         ];
+
         return $this->json($data, 200);
     }
 }

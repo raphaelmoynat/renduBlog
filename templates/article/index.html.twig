@@ -30,7 +30,7 @@
                                     Auteur :
                                     {% if article.author.image is not empty %}
                                     {% for image in article.author.image %}
-                                        <img class="img-fluid rounded-3" style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                                        <img class="img-fluid rounded-circle me-2" style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
                                     {% endfor %}
                                     {% else %}
                                         <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_image_profile.png")|imagine_filter('petite_vignette') }}" alt="">
@@ -50,7 +50,7 @@
             {% endfor %}
         </div>
 
-        {% if app.user %}
+
             <script src="{{ asset('like.js') }}"></script>
-        {% endif %}
+
 {% endblock %}
