@@ -16,7 +16,13 @@ class Category
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(
+        min: 3,
+        max: 20,
+        minMessage: 'donnes nom plus long',
+        maxMessage: 'donnes nom plus court',
+    )]
     private ?string $name = null;
 
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category', orphanRemoval: true)]
