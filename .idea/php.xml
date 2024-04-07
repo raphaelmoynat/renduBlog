@@ -280,6 +280,10 @@
       <path value="$USER_HOME$/Desktop/dev web/instaflop/vendor/doctrine/data-fixtures" />
       <path value="$USER_HOME$/Desktop/dev web/instaflop/vendor/doctrine/doctrine-fixtures-bundle" />
       <path value="$USER_HOME$/Desktop/dev web/instaflop/vendor/fakerphp/faker" />
+      <path value="$USER_HOME$/Desktop/dev web/instaflop/vendor/jms/metadata" />
+      <path value="$USER_HOME$/Desktop/dev web/instaflop/vendor/vich/uploader-bundle" />
+      <path value="$USER_HOME$/Desktop/dev web/instaflop/vendor/liip/imagine-bundle" />
+      <path value="$USER_HOME$/Desktop/dev web/instaflop/vendor/imagine/imagine" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
