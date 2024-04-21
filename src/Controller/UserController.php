@@ -18,7 +18,7 @@ class UserController extends AbstractController
         $image = new Image();
         $form = $this->createForm(ImageType::class, $image);
 
-        return $this->render("user/index.html.twig", [
+        return $this->render("user/avatar.html.twig", [
             "user"=>$user,
             'form'=>$form->createView()
         ]);

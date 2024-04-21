@@ -6,7 +6,7 @@
 {% block body %}
     <div class="my-4"><h1>Tous les articles</h1></div>
         <div class="row">
-            {% for article in articles %}
+            {% for article in articles|reverse %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
 
